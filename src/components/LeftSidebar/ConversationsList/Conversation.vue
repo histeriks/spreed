@@ -80,20 +80,6 @@
 				@click.prevent.exact="setNotificationLevel(3)">
 				{{ t('spreed', 'Off') }}
 			</ActionButton>
-
-			<ActionSeparator />
-
-			<ActionButton v-if="canLeaveConversation"
-				:icon="iconLeaveConversation"
-				@click.prevent.exact="leaveConversation">
-				{{ t('spreed', 'Leave conversation') }}
-			</ActionButton>
-			<ActionButton v-if="canDeleteConversation"
-				icon="icon-delete-critical"
-				class="critical"
-				@click.prevent.exact="deleteConversation">
-				{{ t('spreed', 'Delete conversation') }}
-			</ActionButton>
 		</template>
 	</AppContentListItem>
 </template>
@@ -106,11 +92,7 @@ import ActionText from '@nextcloud/vue/dist/Components/ActionText'
 import AppContentListItem from './AppContentListItem/AppContentListItem'
 import AppNavigationCounter from '@nextcloud/vue/dist/Components/AppNavigationCounter'
 import ConversationIcon from './../../ConversationIcon'
-import { removeCurrentUserFromConversation } from '../../../services/participantsService'
-import {
-	deleteConversation,
-	setNotificationLevel,
-} from '../../../services/conversationsService'
+import { setNotificationLevel } from '../../../services/conversationsService'
 import { generateUrl } from '@nextcloud/router'
 import { CONVERSATION, PARTICIPANT } from '../../../constants'
 
@@ -179,21 +161,6 @@ export default {
 
 		isNotifyNever() {
 			return this.item.notificationLevel === PARTICIPANT.NOTIFY.NEVER
-		},
-
-		canDeleteConversation() {
-			return this.item.canDeleteConversation
-		},
-
-		canLeaveConversation() {
-			return this.item.canLeaveConversation
-		},
-
-		iconLeaveConversation() {
-			if (this.canDeleteConversation) {
-				return 'icon-close'
-			}
-			return 'icon-delete'
 		},
 
 		conversationInformation() {

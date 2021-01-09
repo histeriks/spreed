@@ -50,6 +50,18 @@
 			class="app-settings-section">
 			<MatterbridgeSettings />
 		</AppSettingsSection>
+		<AppSettingsSection
+			v-if="canLeaveConversation || canDeleteConversation"
+			:title="t('spreed', 'Danger zone')"
+			class="app-settings-section"
+			:token="token"
+			:can-leave-conversation="canLeaveConversation"
+			:can-delete-conversation="canDeleteConversation">
+			<DangerZone
+				:token="token"
+				:can-leave-conversation="canLeaveConversation"
+				:can-delete-conversation="canDeleteConversation" />
+		</AppSettingsSection>
 	</AppSettingsDialog>
 </template>
 
@@ -65,6 +77,7 @@ import LobbySettings from './LobbySettings'
 import SipSettings from './SipSettings'
 import MatterbridgeSettings from './Matterbridge/MatterbridgeSettings'
 import { loadState } from '@nextcloud/initial-state'
+import DangerZone from './DangerZone'
 
 export default {
 	name: 'ConversationSettingsDialog',
@@ -78,6 +91,7 @@ export default {
 		LockingSettings,
 		SipSettings,
 		MatterbridgeSettings,
+		DangerZone,
 	},
 
 	data() {
@@ -95,19 +109,31 @@ export default {
 		token() {
 			return this.$store.getters.getToken()
 		},
+
 		conversation() {
 			return this.$store.getters.conversation(this.token) || this.$store.getters.dummyConversation
 		},
+
 		participantType() {
 			return this.conversation.participantType
 		},
+
 		canFullModerate() {
 			return this.participantType === PARTICIPANT.TYPE.OWNER || this.participantType === PARTICIPANT.TYPE.MODERATOR
+		},
+
+		canDeleteConversation() {
+			return this.conversation.canDeleteConversation
+		},
+
+		canLeaveConversation() {
+			return this.conversation.canLeaveConversation
 		},
 	},
 
 	mounted() {
 		subscribe('show-conversation-settings', this.handleShowSettings)
+		subscribe('hide-conversation-settings', this.handleHideSettings)
 	},
 
 	methods: {
@@ -118,8 +144,13 @@ export default {
 			})
 		},
 
+		handleHideSettings() {
+			this.showSettings = false
+		},
+
 		beforeDestroy() {
 			unsubscribe('show-conversation-settings', this.handleShowSettings)
+			unsubscribe('hide-conversation-settings', this.handleHideSettings)
 		},
 	},
 }
