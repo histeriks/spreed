@@ -24,7 +24,7 @@
 		role="dialog"
 		:aria-label="t('spreed', 'Conversation settings')"
 		:open.sync="showSettings"
-		:show-navigation="false">
+		:show-navigation="true">
 		<!-- Guest access -->
 		<AppSettingsSection
 			:title="t('spreed', 'Guests access')"
