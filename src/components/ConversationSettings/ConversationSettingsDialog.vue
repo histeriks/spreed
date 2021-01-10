@@ -25,11 +25,16 @@
 		:aria-label="t('spreed', 'Conversation settings')"
 		:open.sync="showSettings"
 		:show-navigation="false">
+		<!-- Guest access -->
 		<AppSettingsSection
 			:title="t('spreed', 'Guests access')"
 			class="app-settings-section">
 			<LinkShareSettings ref="linkShareSettings" />
 		</AppSettingsSection>
+		<!-- TODO sepatate these 2 settings and rename the settings sections
+		all the settings in this component are conversation settings. Proposal:
+		move lock conversation in destructive actions and create a separate
+		section for listablesettings -->
 		<AppSettingsSection
 			v-if="canFullModerate"
 			:title="t('spreed', 'Conversation settings')"
@@ -37,6 +42,7 @@
 			<ListableSettings :token="token" />
 			<LockingSettings :token="token" />
 		</AppSettingsSection>
+		<!-- Meeting settings -->
 		<AppSettingsSection
 			v-if="canFullModerate"
 			:title="t('spreed', 'Meeting settings')"
@@ -50,6 +56,7 @@
 			class="app-settings-section">
 			<MatterbridgeSettings />
 		</AppSettingsSection>
+		<!-- Destructive actions -->
 		<AppSettingsSection
 			v-if="canLeaveConversation || canDeleteConversation"
 			:title="t('spreed', 'Danger zone')"
