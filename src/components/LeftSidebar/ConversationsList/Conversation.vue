@@ -57,29 +57,6 @@
 				@click.stop.prevent="copyLinkToConversation">
 				{{ t('spreed', 'Copy link') }}
 			</ActionButton>
-
-			<ActionSeparator />
-
-			<ActionText
-				:title="t('spreed', 'Chat notifications')" />
-			<ActionButton
-				:class="{'forced-active': isNotifyAlways}"
-				icon="icon-sound"
-				@click.prevent.exact="setNotificationLevel(1)">
-				{{ t('spreed', 'All messages') }}
-			</ActionButton>
-			<ActionButton
-				:class="{'forced-active': isNotifyMention}"
-				icon="icon-user"
-				@click.prevent.exact="setNotificationLevel(2)">
-				{{ t('spreed', '@-mentions only') }}
-			</ActionButton>
-			<ActionButton
-				:class="{'forced-active': isNotifyNever}"
-				icon="icon-sound-off"
-				@click.prevent.exact="setNotificationLevel(3)">
-				{{ t('spreed', 'Off') }}
-			</ActionButton>
 		</template>
 	</AppContentListItem>
 </template>
@@ -87,12 +64,9 @@
 <script>
 import { showError, showSuccess } from '@nextcloud/dialogs'
 import ActionButton from '@nextcloud/vue/dist/Components/ActionButton'
-import ActionSeparator from '@nextcloud/vue/dist/Components/ActionSeparator'
-import ActionText from '@nextcloud/vue/dist/Components/ActionText'
 import AppContentListItem from './AppContentListItem/AppContentListItem'
 import AppNavigationCounter from '@nextcloud/vue/dist/Components/AppNavigationCounter'
 import ConversationIcon from './../../ConversationIcon'
-import { setNotificationLevel } from '../../../services/conversationsService'
 import { generateUrl } from '@nextcloud/router'
 import { CONVERSATION, PARTICIPANT } from '../../../constants'
 
@@ -100,8 +74,6 @@ export default {
 	name: 'Conversation',
 	components: {
 		ActionButton,
-		ActionSeparator,
-		ActionText,
 		AppContentListItem,
 		AppNavigationCounter,
 		ConversationIcon,
@@ -149,18 +121,6 @@ export default {
 
 		labelFavorite() {
 			return this.item.isFavorite ? t('spreed', 'Remove from favorites') : t('spreed', 'Add to favorites')
-		},
-
-		isNotifyAlways() {
-			return this.item.notificationLevel === PARTICIPANT.NOTIFY.ALWAYS
-		},
-
-		isNotifyMention() {
-			return this.item.notificationLevel === PARTICIPANT.NOTIFY.MENTION
-		},
-
-		isNotifyNever() {
-			return this.item.notificationLevel === PARTICIPANT.NOTIFY.NEVER
 		},
 
 		conversationInformation() {
@@ -324,15 +284,6 @@ export default {
 		},
 		async toggleFavoriteConversation() {
 			this.$store.dispatch('toggleFavorite', this.item)
-		},
-
-		/**
-		 * Set the notification level for the conversation
-		 * @param {int} level The notification level to set.
-		 */
-		async setNotificationLevel(level) {
-			await setNotificationLevel(this.item.token, level)
-			this.item.notificationLevel = level
 		},
 
 		// forward click event

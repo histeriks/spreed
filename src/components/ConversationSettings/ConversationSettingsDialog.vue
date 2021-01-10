@@ -56,6 +56,12 @@
 			class="app-settings-section">
 			<MatterbridgeSettings />
 		</AppSettingsSection>
+		<!-- Notifications settings -->
+		<AppSettingsSection
+			:title="t('spreed', 'Notifications')"
+			class="app-settings-section">
+			<NotificationsSettings :conversation="conversation" />
+		</AppSettingsSection>
 		<!-- Destructive actions -->
 		<AppSettingsSection
 			v-if="canLeaveConversation || canDeleteConversation"
@@ -65,7 +71,7 @@
 			:can-leave-conversation="canLeaveConversation"
 			:can-delete-conversation="canDeleteConversation">
 			<DangerZone
-				:token="token"
+				:conversation="conversation"
 				:can-leave-conversation="canLeaveConversation"
 				:can-delete-conversation="canDeleteConversation" />
 		</AppSettingsSection>
@@ -85,6 +91,7 @@ import SipSettings from './SipSettings'
 import MatterbridgeSettings from './Matterbridge/MatterbridgeSettings'
 import { loadState } from '@nextcloud/initial-state'
 import DangerZone from './DangerZone'
+import NotificationsSettings from './NotificationsSettings'
 
 export default {
 	name: 'ConversationSettingsDialog',
@@ -99,6 +106,7 @@ export default {
 		SipSettings,
 		MatterbridgeSettings,
 		DangerZone,
+		NotificationsSettings,
 	},
 
 	data() {
