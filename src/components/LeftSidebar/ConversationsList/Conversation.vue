@@ -46,18 +46,6 @@
 			:highlighted="counterShouldBePrimary">
 			<strong>{{ item.unreadMessages }}</strong>
 		</AppNavigationCounter>
-		<template v-if="!isSearchResult" slot="actions">
-			<ActionButton v-if="canFavorite"
-				:icon="iconFavorite"
-				@click.prevent.exact="toggleFavoriteConversation">
-				{{ labelFavorite }}
-			</ActionButton>
-			<ActionButton
-				icon="icon-clippy"
-				@click.stop.prevent="copyLinkToConversation">
-				{{ t('spreed', 'Copy link') }}
-			</ActionButton>
-		</template>
 	</AppContentListItem>
 </template>
 
