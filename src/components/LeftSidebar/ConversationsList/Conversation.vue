@@ -51,7 +51,6 @@
 
 <script>
 import { showError, showSuccess } from '@nextcloud/dialogs'
-import ActionButton from '@nextcloud/vue/dist/Components/ActionButton'
 import AppContentListItem from './AppContentListItem/AppContentListItem'
 import AppNavigationCounter from '@nextcloud/vue/dist/Components/AppNavigationCounter'
 import ConversationIcon from './../../ConversationIcon'
@@ -61,7 +60,6 @@ import { CONVERSATION, PARTICIPANT } from '../../../constants'
 export default {
 	name: 'Conversation',
 	components: {
-		ActionButton,
 		AppContentListItem,
 		AppNavigationCounter,
 		ConversationIcon,
@@ -226,50 +224,6 @@ export default {
 			}
 		},
 
-		/**
-		 * Deletes the conversation.
-		 */
-		async deleteConversation() {
-			OC.dialogs.confirm(
-				t('spreed', 'Do you really want to delete "{displayName}"?', this.item),
-				t('spreed', 'Delete conversation'),
-				async function(decision) {
-					if (!decision) {
-						return
-					}
-
-					if (this.item.token === this.$store.getters.getToken()) {
-						this.$router.push('/apps/spreed')
-						this.$store.dispatch('updateToken', '')
-					}
-
-					try {
-						await deleteConversation(this.item.token)
-						// If successful, deletes the conversation from the store
-						this.$store.dispatch('deleteConversation', this.item.token)
-					} catch (error) {
-						console.debug(`error while deleting conversation ${error}`)
-					}
-				}.bind(this)
-			)
-		},
-
-		/**
-		 * Deletes the current user from the conversation.
-		 */
-		async leaveConversation() {
-			try {
-				await removeCurrentUserFromConversation(this.item.token)
-				// If successful, deletes the conversation from the store
-				this.$store.dispatch('deleteConversation', this.item.token)
-			} catch (error) {
-				if (error.response && error.response.status === 400) {
-					showError(t('spreed', 'You need to promote a new moderator before you can leave the conversation.'))
-				} else {
-					console.debug(`error while removing yourself from conversation ${error}`)
-				}
-			}
-		},
 		async toggleFavoriteConversation() {
 			this.$store.dispatch('toggleFavorite', this.item)
 		},
