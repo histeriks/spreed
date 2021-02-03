@@ -16,7 +16,7 @@ And in the works for the [coming versions](https://github.com/nextcloud/spreed/m
 
 	]]></description>
 
-	<version>11.0.0-alpha.4</version>
+	<version>11.0.0-alpha.5</version>
 	<licence>agpl</licence>
 
 	<author>Daniel Calviño Sánchez</author>
@@ -30,6 +30,7 @@ And in the works for the [coming versions](https://github.com/nextcloud/spreed/m
 	<namespace>Talk</namespace>
 
 	<types>
+		<dav />
 		<prevent_group_restriction />
 	</types>
 
