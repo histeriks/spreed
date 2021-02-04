@@ -494,7 +494,7 @@ export default {
 .left-sidebar__list {
 	height: 100% !important;
 	width: 100% !important;
-	overflow-y: auto !important;
+	overflow-y: overlay !important;
 	overflow-x: hidden !important;
 }
 

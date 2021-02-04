@@ -159,7 +159,7 @@ export default {
 
 .acli_wrapper{
 	position: relative;
-	margin: 0 4px 0 8px;
+	margin: 2px 8px;
 	.actions {
 		position: absolute;
 		top: 4px;
@@ -177,7 +177,6 @@ export default {
 	padding: 2px 2px 2px 8px;
 	height: 64px;
 	border-radius: 16px;
-	margin: 2px 0;
 	cursor: pointer;
 	&:hover,
 	&:focus  {
@@ -237,7 +236,7 @@ export default {
 				color: var(--color-text-lighter);
 			}
 			&__counter {
-				margin-right: 22px;
+				margin-right: 16px;
 			}
 		}
 	}
