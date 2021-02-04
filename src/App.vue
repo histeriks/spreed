@@ -67,6 +67,7 @@ import { generateUrl } from '@nextcloud/router'
 import UploadEditor from './components/UploadEditor'
 import SettingsDialog from './components/SettingsDialog/SettingsDialog'
 import ConversationSettingsDialog from './components/ConversationSettings/ConversationSettingsDialog'
+import SessionStorage from './services/SessionStorage'
 import '@nextcloud/dialogs/styles/toast.scss'
 
 export default {
@@ -233,9 +234,21 @@ export default {
 					this.refreshCurrentConversation()
 				} else {
 					console.info('Conversation received, but the current conversation is not in the list. Redirecting to /apps/spreed')
-					this.$router.push('/apps/spreed/not-found')
+					EventBus.$emit('conversationNotFound')
 				}
 			}
+		})
+
+		EventBus.$on('conversationNotFound', () => {
+			// this will skip showing a warning during a call and
+			// also skip auto-leaving the current conversation, which does not exist anyway
+			this.isLeavingAfterSessionConflict = true
+			SessionStorage.removeItem('joined_conversation')
+			this.$nextTick(() => {
+				// Need to delay until next tick, otherwise the PreventUnload is still being triggered
+				// Putting the window in front with the warning and irritating the user
+				window.location = generateUrl('/apps/spreed/not-found')
+			})
 		})
 
 		/**
@@ -437,8 +450,8 @@ export default {
 				})
 			} catch (exception) {
 				console.info('Conversation received, but the current conversation is not in the list. Redirecting to /apps/spreed')
-				this.$router.push('/apps/spreed/not-found')
 				this.$store.dispatch('hideSidebar')
+				EventBus.$emit('conversationNotFound')
 			} finally {
 				this.isRefreshingCurrentConversation = false
 			}
