@@ -113,7 +113,7 @@ import {
 } from '../../../services/conversationsService'
 import { generateUrl } from '@nextcloud/router'
 import { CONVERSATION, PARTICIPANT } from '../../../constants'
-
+import { emit } from '@nextcloud/event-bus'
 export default {
 	name: 'Conversation',
 	components: {
@@ -370,6 +370,9 @@ export default {
 
 		// forward click event
 		onClick(event) {
+			emit('conversationClicked', {
+				token: this.item.token,
+			})
 			this.$emit('click', event)
 		},
 	},

@@ -46,7 +46,7 @@ get the messagesList array and loop through the list to generate the messages.
 			v-bind="item"
 			:messages="item"
 			@deleteMessage="handleDeleteMessage" />
-		<template v-if="!messagesGroupedByAuthor.length">
+		<template v-if="loading">
 			<LoadingPlaceholder
 				type="messages"
 				:count="15" />
@@ -131,6 +131,14 @@ export default {
 			previousScrollTopValue: null,
 
 			pollingErrorTimeout: 1,
+
+			loading: true,
+
+			/**
+			 * Keeps track of whether the current conversation has been joined in the
+			 * signaling server or not
+			 */
+			currentConversationIsJoined: false,
 		}
 	},
 
@@ -224,6 +232,10 @@ export default {
 		scroller() {
 			return this.$refs.scroller
 		},
+
+		messageListIsPopulated() {
+			return this.messagesGroupedByAuthor.length > 0
+		},
 	},
 
 	watch: {
@@ -232,6 +244,12 @@ export default {
 			handler() {
 				this.handleStartGettingMessagesPreconditions()
 			},
+		},
+
+		messageListIsPopulated(newValue) {
+			if (newValue && this.currentConversationIsJoined) {
+				this.loading = false
+			}
 		},
 	},
 	mounted() {
@@ -242,6 +260,8 @@ export default {
 		EventBus.$on('routeChange', this.onRouteChange)
 		subscribe('networkOffline', this.handleNetworkOffline)
 		subscribe('networkOnline', this.handleNetworkOnline)
+		subscribe('conversationClicked', this.handleConversationClick)
+		subscribe('roomJoined', this.handleRoomJoined)
 	},
 	beforeDestroy() {
 		EventBus.$off('scrollChatToBottom', this.handleScrollChatToBottomEvent)
@@ -256,6 +276,8 @@ export default {
 
 		unsubscribe('networkOffline', this.handleNetworkOffline)
 		unsubscribe('networkOnline', this.handleNetworkOnline)
+		unsubscribe('conversationClicked', this.handleConversationClick)
+		unsubscribe('roomJoined', this.handleRoomJoined)
 	},
 
 	methods: {
@@ -707,6 +729,23 @@ export default {
 
 		setChatScrolledToBottom(boolean) {
 			this.$emit('setChatScrolledToBottom', boolean)
+		},
+		// Whenever a conversation is clicked, trigger the loading state until
+		// the room is joined in the signaling server
+		handleConversationClick(token) {
+			if (token !== this.token) {
+				this.currentConversationIsJoined = false
+				this.loading = true
+			}
+		},
+
+		handleRoomJoined({ token }) {
+			if (token === this.token) {
+				this.currentConversationIsJoined = true
+				if (this.messageListIsPopulated) {
+					this.loading = false
+				}
+			}
 		},
 	},
 }

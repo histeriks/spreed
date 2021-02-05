@@ -3,11 +3,13 @@
  * @copyright Copyright (c) 2019 Ivan Sein <ivan@nextcloud.com>
  * @copyright Copyright (c) 2019 Joachim Bauch <bauch@struktur.de>
  * @copyright Copyright (c) 2019 Joas Schilling <coding@schilljs.com>
+ * @copyright Copyright (c) 2020 Marco Ambrosini <marcoambrosini@pm.me>
  *
  * @author Daniel Calviño Sánchez <danxuliu@gmail.com>
  * @author Ivan Sein <ivan@nextcloud.com>
  * @author Joachim Bauch <bauch@struktur.de>
  * @author Joas Schilling <coding@schilljs.com>
+ * @author Marco Ambrosini <marcoambrosini@pm.me>
  *
  * @license GNU AGPL version 3 or any later version
  *
@@ -40,6 +42,7 @@ import {
 	showWarning,
 	TOAST_PERMANENT_TIMEOUT,
 } from '@nextcloud/dialogs'
+import { emit } from '@nextcloud/event-bus'
 
 const Signaling = {
 	Base: {},
@@ -194,6 +197,10 @@ Signaling.Base.prototype.joinRoom = function(token, sessionId) {
 		this.currentRoomToken = token
 		this.nextcloudSessionId = sessionId
 		this._trigger('joinRoom', [token])
+		// global event that lets component know that the room has been joined
+		emit('roomJoined', {
+			token,
+		})
 		resolve()
 		if (this.currentCallToken === token) {
 			// We were in this call before, join again.
